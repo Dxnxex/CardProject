@@ -4,11 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Úprava Obrázku</title>
+    <link rel="stylesheet" th:href="@{styles/style.css}"/>
+
 </head>
 <body>
-<canvas id="myCanvas"></canvas>
-<button id="saveBtn">Uložit obrázek</button>
 
-<script th:src="@{/scripts/canvasScript.js}"></script>
+<div id="menu">
+    <h3>Ovládání</h3>
+    <label for="xInput">Pozice X:</label>
+    <input type="number" id="xInput" placeholder="Zadejte X" />
+
+    <label for="yInput">Pozice Y:</label>
+    <input type="number" id="yInput" placeholder="Zadejte Y" />
+
+    <button id="moveBtn">Přemístit</button>
+    <button id="saveBtn">Uložit obrázek</button>
+</div>
+
+<canvas id="myCanvas"></canvas>
+
+
+<script type="module" th:src="@{/scripts/canvasScript.js}"></script>
 </body>
 </html>
