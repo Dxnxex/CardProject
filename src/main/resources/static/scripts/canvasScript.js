@@ -1,36 +1,50 @@
+import { controlCanvas } from "./controlCanvas.js";
 import { initCanvas } from './initCanvas.js';
-
 
 window.onload = function () {
 
     const { canvas, ctx, saveBtn, moveBtn, xInput, yInput, img } = initCanvas();
 
+    const imageSelect = document.getElementById("imageSelect");
+    const images =[];
+    const selectedIndex = { value: 0 };
 
-    // Objekt reprezentující obrázek
-    const imageObject = {
-        x: 100,
-        y: 100,
-        width: 0,
-        height: 0,
-        isDragging: false,
-        offsetX: 0,
-        offsetY: 0
+    //Setup images
+    for (let i = 1; i <= 2; i++) {
+        images.push({
+            img: new Image(),
+            x: i * 100,
+            y: i * 50,
+            width: 100,
+            height: 100,
+            isDragging: false,
+            offsetX: 0,
+            offsetY: 0,
+            src: `uploads/image${i}.png`,
+        });
     };
 
-    // Funkce pro vykreslení obrázku na canvas
-    function drawImage() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, imageObject.x, imageObject.y, imageObject.width, imageObject.height);
-    }
 
-    // Zjištění, zda je myš uvnitř obrázku
-    function isMouseInImage(mouseX, mouseY) {
-        return (
-            mouseX >= imageObject.x &&
-            mouseX <= imageObject.x + imageObject.width &&
-            mouseY >= imageObject.y &&
-            mouseY <= imageObject.y + imageObject.height
-        );
+
+    // Nastavení HTML Options
+    images.forEach((image, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = `Obrázek ${index + 1}`;
+        imageSelect.appendChild(option);
+    });
+
+
+
+    // Funkce pro vykreslení obrázku na canvas
+    function drawImages() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        //FOR
+        images.forEach((images) => {
+            ctx.drawImage(images.img, images.x, images.y, images.width, images.height);
+        });
+
     }
 
     // Převod pozice myši na souřadnice canvas
@@ -42,78 +56,67 @@ window.onload = function () {
         };
     }
 
-    // Událost: stisknutí myši
+    // Myš - Stistknutí - Označit
     canvas.addEventListener("mousedown", (event) => {
         const mousePos = getMousePos(event);
-        if (isMouseInImage(mousePos.x, mousePos.y)) {
-            imageObject.isDragging = true;
-            imageObject.offsetX = mousePos.x - imageObject.x;
-            imageObject.offsetY = mousePos.y - imageObject.y;
-        }
+
+        images.forEach((image, index) => {
+            if (
+                mousePos.x >= image.x &&
+                mousePos.x <= image.x + image.width &&
+                mousePos.y >= image.y &&
+                mousePos.y <= image.y + image.height
+            ) {
+                imageSelect.value = index;
+                selectedIndex.value = index;
+
+                image.isDragging = true;
+                image.offsetX = mousePos.x - image.x;
+                image.offsetY = mousePos.y - image.y;
+
+            }
+
+        });
+
+        setInputValues();
     });
 
-    // Myš - Držení - Tahání objektu
+// Myš - Držení - Tahání objektu
     canvas.addEventListener("mousemove", (event) => {
-        if (imageObject.isDragging) {
-            const mousePos = getMousePos(event);
-            imageObject.x = mousePos.x - imageObject.offsetX;
-            110
+        const mousePos = getMousePos(event);
 
-            imageObject.y = mousePos.y - imageObject.offsetY;
-            drawImage();
+        images.forEach((image, index) => {
+            if (image.isDragging) {
+                image.x = mousePos.x - image.offsetX;
+                image.y = mousePos.y - image.offsetY;
+
+                drawImages();
+            }
+        });
+
+        setInputValues();
+    });
+
+
+        //Nastavení X & Y Inputu v HTML
+        function setInputValues() {
+            xInput.value =   images[selectedIndex.value].x;
+            yInput.value =   images[selectedIndex.value].y;
         }
-    });
 
-    // Myš - Uvolnění - Přestat tahat
-    canvas.addEventListener("mouseup", () => {
+        // Myš - Uvolnění - Přestat tahat
+        canvas.addEventListener("mouseup", () => {
+            images.forEach((image) => {
+                image.isDragging = false;
+            });
+        });
 
-        //Přestat tahat
-        imageObject.isDragging = false;
-
-        //Aktualizace hodnot v OVLÁDÁNÍ
-        xInput.value = Math.round(imageObject.x);
-        yInput.value = Math.round(imageObject.y);
-
-    });
-
-    xInput.addEventListener("click", (event) => {
-
-        if (xInput.value<imageObject.x) {imageObject.x -=1;
-        } else {imageObject.x +=1;}
-
-        xInput.value = Math.round(imageObject.x);
-        drawImage()
-
-    });
-
-
-    yInput.addEventListener("click", (event) => {
-
-        if (yInput.value<imageObject.y) {imageObject.y -=1;
-        } else {imageObject.y +=1;}
-
-        yInput.value = Math.round(imageObject.y);
-        drawImage()
-
-    });
-
-    // Přemístění obrázku podle hodnot v políčkách
-    moveBtn.addEventListener("click", () => {
-        const newX = parseInt(xInput.value, 10);
-        const newY = parseInt(yInput.value, 10);
-
-        if (!isNaN(newX)) imageObject.x = newX;
-        if (!isNaN(newY)) imageObject.y = newY;
-
-        drawImage();
-    });
 
     // Po načetení image -> nastavení velikost podpůrného objektu
-    img.onload = () => {
-        imageObject.width = img.width;
-        imageObject.height = img.height;
-        drawImage();
-    };
+    images.forEach((image) => {
+        image.img.src = image.src;
+        image.img.onload = drawImages;
+    });
 
     // Uložení obrázku jako soubor
     saveBtn.addEventListener("click", function () {
@@ -123,4 +126,8 @@ window.onload = function () {
         link.download = "upraveny_obrazek.png";
         link.click();
     });
+
+
+controlCanvas(images, selectedIndex, drawImages,setInputValues,xInput,yInput,moveBtn);
+
 };
