@@ -130,4 +130,36 @@ window.onload = function () {
 
 controlCanvas(images, selectedIndex, drawImages,setInputValues,xInput,yInput,moveBtn);
 
+
+
+    async function createProject(projectName) {
+        const response = await fetch('/projects/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: projectName }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert(`Projekt byl vytvořen!\nID: ${result.projectId}\nNázev: ${result.projectName}`);
+            return result.projectId; // Vrací ID projektu, které lze použít pro další operace
+        } else {
+            alert(`Chyba: ${result.error}`);
+            return null;
+        }
+    }
+
+    document.getElementById('createProjectButton').addEventListener('click', async () => {
+        const projectName = prompt('Zadejte název projektu:');
+        if (projectName) {
+            const projectId = await createProject(projectName);
+            if (projectId) {
+                console.log(`Projekt vytvořen s ID: ${projectId}`);
+                // Můžete přesměrovat nebo použít ID pro další akce
+            }
+        }
+    });
+
+
+
 };

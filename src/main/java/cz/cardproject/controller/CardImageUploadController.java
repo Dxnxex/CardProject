@@ -25,28 +25,30 @@ public class CardImageUploadController {
     @PostMapping("")
     public ResponseEntity<Map<String, String>> handleFileUpload(@RequestBody Map<String, String> payload) {
 
-        //Console LOG
         System.out.println("PostMapping - Upload");
 
         String base64Image = payload.get("image");
-
-        //Console LOG
         System.out.println("PostMapping - Upload - Base64:" + base64Image);
 
         if (base64Image != null && !base64Image.isEmpty()) {
             byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
 
             try {
-                Path path = Paths.get("uploads/image.png");
-                Files.createDirectories(path.getParent());
-                Files.write(path, decodedBytes);
 
-                //Console LOG
-                System.out.println("PostMapping - Upload - AbsoluteFilePath:" +  path.toAbsolutePath());
+                // Nastavení složky uploads
+                Path uploadsDir = Paths.get("uploads");
+                Files.createDirectories(uploadsDir);
+                System.out.println("PostMapping - Upload - AbsoluteFilePath:" +  uploadsDir.toAbsolutePath());
+
+                // Dynamické pojmenování
+
+
 
 
                 Map<String, String> response = Map.of("message", "Soubor byl úspěšně nahrán.");
                 return ResponseEntity.ok(response);
+
+
             } catch (IOException e) {
                 Map<String, String> errorResponse = Map.of("error", "Chyba při ukládání souboru: " + e.getMessage());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);

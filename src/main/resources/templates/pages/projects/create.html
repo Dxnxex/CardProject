@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+
+
+
+<!-- FORMULÁŘ - VYTVOŘENÍ PROJEKTU -->
+<section class="container px-2">
+    <article class="container | borders ">
+
+        <div class="container mb-12">
+
+                <form th:object="${createProject}" th:action="@{/projects/create}" method="post">
+
+                    <div class="row mb-3 " >
+
+                        <div class="col-md-12">
+                            <label for="name">Název:</label>
+                            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Název projektu"/>
+                        </div>
+
+                        <button class="my-3" type="submit">Uložit</button>
+
+                    </div>
+
+                </form>
+
+        </div>
+
+    </article>
+</section>
+
+
+
+</body>
+
+
+</html>

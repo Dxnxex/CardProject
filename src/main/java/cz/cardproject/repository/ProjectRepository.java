@@ -1,10 +1,11 @@
 package cz.cardproject.repository;
 
-import cz.cardproject.entity.CardEntity;
+import cz.cardproject.entity.ProjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CardRepository extends JpaRepository<CardEntity, Long>{
+public interface ProjectRepository extends JpaRepository<ProjectEntity, Long>   {
 
 }
+

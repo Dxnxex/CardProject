@@ -11,9 +11,17 @@
 
 
 <!-- Formulář pro výběr a nahrání obrázku -->
-<input type="file" id="fileInput" accept="image/*">
-<button id="uploadButton">Nahrát obrázek</button>
+<div>
+    <label for="fileType">Vyberte typ souboru:</label>
+    <select id="fileType">
+        <option value="layout">Layout karty</option>
+        <option value="image">Obrázek</option>
+        <option value="icon">Ikona</option>
+    </select>
 
+    <input type="file" id="fileInput" accept="image/*" />
+    <button id="uploadBtn">Nahrát</button>
+</div>
 
 
 
