@@ -14,7 +14,7 @@ public class ProjectEntity {
     private Long id;
 
     private String name;
-    private String user_id;;
+    private String user_id;
     private String created_at;
 
 }
